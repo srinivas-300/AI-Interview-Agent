@@ -1,2 +1,16 @@
-venv/
+# General
 __pycache__/
+node_modules/
+*.log
+*.env
+.DS_Store
+.vscode/
+.git/
+OneDrive/
+Thumbs.db
+
+# Ignore files with invalid perms
+*.lnk
+*.tmp
+*.bak
+~*

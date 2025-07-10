@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function InterviewAgent() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -8,6 +9,7 @@ function InterviewAgent() {
   const [input, setInput] = useState("");
   const chatContainerRef = useRef(null);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const authenticateUser = async () => {
     try {
@@ -29,16 +31,25 @@ function InterviewAgent() {
     if (!input.trim()) return;
 
     const userMessage = { sender: "user", text: input };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
     try {
       const res = await axios.post("http://localhost:8000/chat", { message: input });
       const botMessage = { sender: "bot", text: res.data.response };
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       const errorMessage = { sender: "bot", text: "Error getting response from the agent." };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
+    }
+  };
+
+  const endInterview = async () => {
+    try {
+      await axios.post("http://localhost:8000/end");
+      navigate("/end");
+    } catch (err) {
+      alert("Failed to end interview.");
     }
   };
 
@@ -48,7 +59,7 @@ function InterviewAgent() {
     }
   }, [messages]);
 
-  // Authentication form (shown if not yet authenticated)
+  // Authentication form
   if (!authenticated) {
     return (
       <div style={{ padding: "2rem", maxWidth: 500, margin: "auto" }}>
@@ -66,7 +77,7 @@ function InterviewAgent() {
     );
   }
 
-  // Chat UI after successful authentication
+  // Chat UI
   return (
     <div style={{ padding: "2rem", maxWidth: 600, margin: "auto" }}>
       <h2>Interview Chat</h2>
@@ -78,11 +89,17 @@ function InterviewAgent() {
           border: "1px solid #ccc",
           padding: "1rem",
           borderRadius: "8px",
-          marginBottom: "1rem"
+          marginBottom: "1rem",
         }}
       >
         {messages.map((msg, i) => (
-          <div key={i} style={{ textAlign: msg.sender === "user" ? "right" : "left", margin: "0.5rem 0" }}>
+          <div
+            key={i}
+            style={{
+              textAlign: msg.sender === "user" ? "right" : "left",
+              margin: "0.5rem 0",
+            }}
+          >
             <strong>{msg.sender === "user" ? "You" : "Agent"}:</strong> {msg.text}
           </div>
         ))}
@@ -90,12 +107,17 @@ function InterviewAgent() {
       <input
         type="text"
         value={input}
-        onChange={e => setInput(e.target.value)}
-        onKeyDown={e => e.key === 'Enter' && sendMessage()}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         style={{ width: "80%", padding: "0.5rem", marginRight: "0.5rem" }}
         placeholder="Type your answer..."
       />
-      <button onClick={sendMessage} style={{ padding: "0.5rem 1rem" }}>Send</button>
+      <button onClick={sendMessage} style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}>
+        Send
+      </button>
+      <button onClick={endInterview} style={{ padding: "0.5rem 1rem", backgroundColor: "#e74c3c", color: "white" }}>
+        End Interview
+      </button>
     </div>
   );
 }

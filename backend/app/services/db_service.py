@@ -43,3 +43,13 @@ def verify_user_id(user_id: str) -> bool:
     user = db['selection'].find_one({"_id": user_id})
     return user is not None
 
+
+def get_user(user_id: str) -> dict:
+    try:
+        user_id = ObjectId(user_id)
+        user = db['selection'].find_one({"_id": user_id})
+        return user  # returns None if not found
+    except Exception as e:
+        log.error(f"Error verifying user ID: {e}")
+        return None
+
