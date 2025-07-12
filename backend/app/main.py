@@ -1,10 +1,12 @@
+from http.client import HTTPException
+from fastapi import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from app.data.ChatRequest import ChatRequest
 from app.data.AuthRequest import AuthRequest
 from app.agents.interview_agent import InterviewAgent
-from app.services.db_service import store_conversation_history, verify_user_id
+from app.services.db_service import get_user, store_conversation_history, verify_user_id
 
 app = FastAPI()
 
@@ -33,13 +35,22 @@ def redirect_to_chat():
     return RedirectResponse(url="/chat")
 
 @app.post("/chat")
-def chat(request: ChatRequest):
-    global agent
-    if agent is None:
-        # Initialize only once per session after authentication
-        agent = InterviewAgent(user_id=user_id)
+async def chat(request: Request):
+    global agent, user_id
 
-    response = agent.ask_question(request.message)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    user = get_user(user_id)
+    if agent is None:
+        agent = InterviewAgent(user)
+
+    data = await request.json()  
+    message = data.get("message")
+    if not message:
+        return {"error": "No message provided"}
+
+    response = agent.chat(message)
     return {"response": response}
 
 @app.get("/chat")

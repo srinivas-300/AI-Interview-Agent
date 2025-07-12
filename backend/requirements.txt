@@ -1,6 +1,25 @@
+# Core backend
 fastapi
 uvicorn
+
+
+# langchain==0.1.16
+# langchain-core==0.1.47
+# langchain-community==0.0.35
+
+langgraph
+openai
 google-generativeai
+tiktoken
+
+
+google-search-results
+# arxiv
+# wikipedia
+requests
+
+
 pymongo
 dnspython
+
 python-dotenv
