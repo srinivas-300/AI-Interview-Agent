@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import os
 import logging
 from pymongo import MongoClient
@@ -7,7 +8,7 @@ from bson.objectid import ObjectId
 
 load_dotenv()
 
-log = logging.getLogger("mongo_service")
+log = logging.getLogger("db_mongo_service")
 logging.basicConfig(level=logging.INFO)
 
 # Load and encode credentials
@@ -17,10 +18,10 @@ MONGO_PASSWORD = quote_plus(os.getenv("MONGO_PASSWORD"))
 # Build URI
 MONGO_URI = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@llmcluster.tudpm.mongodb.net/llmdb?retryWrites=true&w=majority&appName=llmcluster"
 
-# Connect to MongoDB
+
 client = MongoClient(MONGO_URI)
 db = client['llmdb']
-collection = db['chat']
+
 
 def store_conversation_history(history, role):
     if not history:
@@ -33,7 +34,7 @@ def store_conversation_history(history, role):
     }
 
     try:
-        result = collection.insert_one(document)
+        result = db['chat'].insert_one(document)
         log.info(f"Conversation stored with ID: {result.inserted_id}")
     except Exception as e:
         log.error(f"Failed to store conversation: {e}")
@@ -51,5 +52,20 @@ def get_user(user_id: str) -> dict:
         return user  # returns None if not found
     except Exception as e:
         log.error(f"Error verifying user ID: {e}")
+        return None
+    
+
+def store_score_feedback(user_id: str, final_score: str, user_feedback: str) -> str:
+    document = {
+        "user_id": user_id,
+        "final_score": final_score,
+        "user_feedback": user_feedback,
+        "timestamp": datetime.now(timezone.utc)
+    }
+    try:
+        result = db["interview_result"].insert_one(document)
+        return f"New interview result inserted with ID: {result.inserted_id}"
+    except Exception as e:
+        log.error(f"Error inserting interview_result \n{e}\n")
         return None
 

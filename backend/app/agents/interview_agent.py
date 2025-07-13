@@ -4,6 +4,7 @@ import os
 from app.services.interview_setup import interview_setup
 from app.services.agent_service import run_tool_augmented_agent
 from app.utils.evaluation_prompt_builder import evaluator_prompt_builder
+from app.utils.final_score_prompt_builder import *
 
 class InterviewAgent:
     def __init__(self, user):
@@ -36,3 +37,16 @@ class InterviewAgent:
         self.history[-1]["agent"] = response
 
         return response
+    
+
+    def get_finalscore_userfeedback(self) -> str:
+
+        rubric_score_prompt = rubric_score_prompt_builder(self.history,self.jd_analysis, self.guidelines)
+        rubric = run_tool_augmented_agent(rubric_score_prompt)
+
+        final_score_prompt = final_score_prompt_builder(rubric , self.history)
+        final_score = run_tool_augmented_agent(final_score_prompt)
+
+        user_feedback_prompt = user_feedback_prompt_builder(final_score , self.history)
+        user_feedback = run_tool_augmented_agent(user_feedback_prompt)
+        return user_feedback , final_score

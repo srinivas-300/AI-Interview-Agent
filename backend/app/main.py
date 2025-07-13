@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from app.data.ChatRequest import ChatRequest
 from app.data.AuthRequest import AuthRequest
 from app.agents.interview_agent import InterviewAgent
-from app.services.db_service import get_user, store_conversation_history, verify_user_id
+from app.services.db_service import *
 
 app = FastAPI()
 
@@ -59,13 +59,28 @@ def chat_home():
 
 @app.post("/end")
 async def end_interview():
-    global agent
+    global agent ,user_id
     if agent and agent.history:
+
+        user_feedback , final_score = agent.get_finalscore_userfeedback()
+
+        store_score_feedback(user_id , final_score , user_feedback)
         store_conversation_history(agent.history, agent.role)
+
         agent = None  # Clear singleton and memory
-        return {"message": "Interview history saved and agent cleared."}
+        return user_feedback
     return {"message": "No active history to save."}
 
-@app.get("/resume-parser")
+
+
+@app.get("/interview_details")
 def resume_parser():
-    return {"message": "Resume Parser backend is working!"}
+    return {"message": "interview_details backend is working!"}
+
+@app.post("/interview_result")
+def resume_parser():
+    return {"message": "interview_result backend is working!"}
+
+@app.post("/interview_setup")
+def resume_parser():
+    return {"message": "interview_setup backend is working!"}

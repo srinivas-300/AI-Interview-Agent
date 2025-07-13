@@ -9,7 +9,7 @@ function Home() {
       <h1>Welcome</h1>
       <button onClick={() => navigate("/interview")}>Candidate</button>
       <br /><br />
-      <button onClick={() => navigate("/resume-parser")}>Admin</button>
+      <button onClick={() => navigate("/admin_home")}>Admin</button>
     </div>
   );
 }

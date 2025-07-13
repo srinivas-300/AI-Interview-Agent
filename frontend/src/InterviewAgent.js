@@ -7,6 +7,7 @@ function InterviewAgent() {
   const [userId, setUserId] = useState("");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [finalFeedback, setFinalFeedback] = useState("");
   const chatContainerRef = useRef(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -35,19 +36,24 @@ function InterviewAgent() {
     setInput("");
 
     try {
-      const res = await axios.post("http://localhost:8000/chat", { message: input });
+      const res = await axios.post("http://localhost:8000/chat", {
+        message: input,
+      });
       const botMessage = { sender: "bot", text: res.data.response };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      const errorMessage = { sender: "bot", text: "Error getting response from the agent." };
+      const errorMessage = {
+        sender: "bot",
+        text: "Error getting response from the agent.",
+      };
       setMessages((prev) => [...prev, errorMessage]);
     }
   };
 
   const endInterview = async () => {
     try {
-      await axios.post("http://localhost:8000/end");
-      navigate("/end");
+      const res = await axios.post("http://localhost:8000/end");
+      setFinalFeedback(res.data);
     } catch (err) {
       alert("Failed to end interview.");
     }
@@ -59,7 +65,6 @@ function InterviewAgent() {
     }
   }, [messages]);
 
-  // Authentication form
   if (!authenticated) {
     return (
       <div style={{ padding: "2rem", maxWidth: 500, margin: "auto" }}>
@@ -71,13 +76,15 @@ function InterviewAgent() {
           placeholder="Enter your ID"
           style={{ width: "80%", padding: "0.5rem", marginRight: "0.5rem" }}
         />
-        <button onClick={authenticateUser} style={{ padding: "0.5rem 1rem" }}>Submit</button>
+        <br></br>
+        <button onClick={authenticateUser} style={{ padding: "0.5rem 1rem" }}>
+          Submit
+        </button>
         {error && <p style={{ color: "red" }}>{error}</p>}
       </div>
     );
   }
 
-  // Chat UI
   return (
     <div style={{ padding: "2rem", maxWidth: 600, margin: "auto" }}>
       <h2>Interview Chat</h2>
@@ -104,6 +111,7 @@ function InterviewAgent() {
           </div>
         ))}
       </div>
+
       <input
         type="text"
         value={input}
@@ -112,12 +120,34 @@ function InterviewAgent() {
         style={{ width: "80%", padding: "0.5rem", marginRight: "0.5rem" }}
         placeholder="Type your answer..."
       />
+      
       <button onClick={sendMessage} style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}>
         Send
       </button>
-      <button onClick={endInterview} style={{ padding: "0.5rem 1rem", backgroundColor: "#e74c3c", color: "white" }}>
+
+      <br></br>
+      
+      <button
+        onClick={endInterview}
+        style={{ padding: "0.5rem 1rem", backgroundColor: "#e74c3c", color: "white" }}
+      >
         End Interview
       </button>
+
+      {finalFeedback && (
+        <div
+          style={{
+            backgroundColor: "#f8f8f8",
+            padding: "1rem",
+            marginTop: "1.5rem",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+          }}
+        >
+          <h3>Interview Feedback</h3>
+          <p>{finalFeedback}</p>
+        </div>
+      )}
     </div>
   );
 }

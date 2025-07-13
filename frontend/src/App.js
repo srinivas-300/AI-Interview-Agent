@@ -4,7 +4,7 @@ import Home from "./Home";
 import FormPage from "./FormPage";
 import Complete from "./Complete";
 import InterviewAgent from "./InterviewAgent";
-import ResumeParser from "./ResumeParser";
+import AdminHome from "./AdminHome";
 import EndPage from "./EndPage";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/form" element={<FormPage />} />
         <Route path="/complete" element={<Complete />} />
         <Route path="/interview" element={<InterviewAgent />} />
-        <Route path="/resume-parser" element={<ResumeParser />} />
+        <Route path="/admin_home" element={<AdminHome />} />
         <Route path="/end" element={<EndPage />} />
       </Routes>
     </Router>
