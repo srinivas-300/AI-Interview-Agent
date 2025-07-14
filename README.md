@@ -3,6 +3,48 @@
 
 ---
 
+The **AI Interview Agent** is a full-stack application designed to conduct personalized, adaptive interviews using advanced language models. It simulates an intelligent interviewer by dynamically analyzing job descriptions, resumes, and role-specific context to generate targeted questions and provide insightful evaluations.
+
+This POC showcases the use of lightweight OpenAI GPT-4.1 nano models integrated into a scalable, containerized architecture—ideal for real-time, cloud-based AI interview automation.
+
+---
+
+## 🔍 Key Features
+
+- ✨ **Personalized Interviews** — Generates role-specific interview questions using LLMs.
+- 📄 **Resume + JD Parsing** — Extracts context from candidate profiles and job descriptions.
+- 🧠 **LLM-Driven Logic** — Uses **OpenAI GPT-4.1 nano** for dynamic question generation and scoring.
+- 🌐 **Web Interface** — Built with a React frontend and FastAPI backend.
+- 🐳 **Containerized** — Fully Dockerized for local development and production deployment.
+- ☁️ **Cloud Ready** — Easily deployable on VMs (AWS EC2, GCP, Azure) with Docker support.
+
+---
+
+## 📦 Tech Stack
+
+- **Frontend**: React.js  
+- **Backend**: FastAPI (Python 3.9)  
+- **LLM API**: OpenAI GPT-4.1 nano via custom wrapper  
+- **Database**: MongoDB Atlas (for storing interview state/history)  
+- **Deployment**: Docker, Docker Compose  
+
+---
+
+## 🧪 Use Cases
+
+- AI-powered mock interview system
+- Automated HR screening agent
+- Adaptive role-specific interview coaching
+- Resume and JD analysis-driven question pipelines
+
+---
+
+## 🚀 Quick Start
+
+Want to run this locally or on a cloud VM using Docker? [See full deployment guide ⬇️]
+
+
+
 ### 🔧 Local Setup (Using Docker Desktop)
 
 1. **Clone the repository**  
