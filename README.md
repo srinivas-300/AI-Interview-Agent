@@ -150,3 +150,23 @@ If you're testing from any machine with Docker Desktop installed:
 docker run -d -p 8000:8000 saisrinivas300/ai-interview-agent-backend:latest
 docker run -d -p 3000:3000 saisrinivas300/ai-interview-agent-frontend:latest
 ```
+
+### 1. 🧭 High-Level Flow of Interview Agent
+<img width="616" height="274" alt="Screenshot 2025-07-14 022127" src="https://github.com/user-attachments/assets/bf7a5b22-5202-4998-b31a-948a9b8fb735" />
+
+
+### 2. 🔄 Tool-Based Decision Logic in Interview Agent
+<img width="866" height="548" alt="Screenshot 2025-07-14 022626" src="https://github.com/user-attachments/assets/94d5a385-716b-4791-be62-86ca7e1dbd09" />
+
+### 3. 🧠 Internal Architecture of the Interview Agent
+
+<img width="972" height="970" alt="Screenshot 2025-07-14 021953" src="https://github.com/user-attachments/assets/8e964681-951f-49fe-bc3f-2c7a3a184f68" />
+
+### 4. ☁️ Cloud Deployment Architecture
+
+<img width="1122" height="382" alt="Screenshot 2025-07-14 022225" src="https://github.com/user-attachments/assets/74bb4801-b04f-4753-891a-60600f744028" />
+
+
+
+
+
