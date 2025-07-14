@@ -67,7 +67,7 @@ Want to run this locally or on a cloud VM using Docker? [See full deployment gui
    ```
 
 3. **MongoDB Setup**  
-   Ensure MongoDB Atlas or local instance is running with the following collections:
+   Ensure MongoDB Atlas is running with the following collections:
    - `selection`
    - `interview_result`
    - `chat`
