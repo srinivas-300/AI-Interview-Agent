@@ -32,8 +32,7 @@ This POC showcases the use of lightweight OpenAI GPT-4.1 nano models integrated 
 
 ## 🧪 Use Cases
 
-- AI-powered mock interview system
-- Automated HR screening agent
+- AI-powered interview system
 - Adaptive role-specific interview coaching
 - Resume and JD analysis-driven question pipelines
 
@@ -150,6 +149,50 @@ If you're testing from any machine with Docker Desktop installed:
 docker run -d -p 8000:8000 saisrinivas300/ai-interview-agent-backend:latest
 docker run -d -p 3000:3000 saisrinivas300/ai-interview-agent-frontend:latest
 ```
+
+## 🧠 Core Functionality
+
+This AI Interview Agent is structured around four intelligent components that simulate a personalized, role-aware interview experience using OpenAI GPT‑4.1 nano:
+
+---
+
+### 🔧 Tool Agent
+
+- Determines whether a candidate question requires external information via Tools.
+- Guides the LLM using a strict YES/NO format before tool invocation.
+- If a tool output is provided, the LLM integrates it into its answer; otherwise, it answers directly using internal knowledge.
+
+---
+
+### 📋 Interview Setup
+
+- Analyzes job descriptions to extract core responsibilities, technical skills, soft skills, and hidden expectations.
+- Evaluates the candidate's resume to assess strengths, red flags, and follow-up cues.
+- Combines JD and resume insights to generate interview strategy guidelines.
+- Produces 6–8 personalized questions including technical, behavioral, and analytical types tailored to the candidate and role.
+
+---
+
+### 🗣️ Real-Time Evaluation & Interaction
+
+- Continuously evaluates candidate responses for soft skills such as tone, body language (inferred), communication, and inclusion awareness.
+- Dynamically adapts the interview flow based on response quality, evaluation feedback, and conversation history.
+- Manages intro greetings, thoughtful follow-ups, and natural transitions across questions.
+- Ensures a professional, human-like interview tone throughout.
+
+---
+
+### 📊 Final Evaluation & Feedback
+
+- Builds a custom scoring rubric with 5–7 evaluation dimensions aligned to the role.
+- Scores the candidate across all dimensions with justifications, including an overall Goodness of Fit rating.
+- Detects structural issues in interview flow (e.g., premature endings).
+- Generates constructive, encouraging feedback for the candidate without disclosing rubric or scoring details.
+
+---
+
+This modular design enables fully automated yet highly adaptive interviews tailored to any role, making it ideal for scalable talent evaluation.
+
 
 ### 1. 🧭 High-Level Flow of Interview Agent
 <img width="616" height="274" alt="Screenshot 2025-07-14 022127" src="https://github.com/user-attachments/assets/bf7a5b22-5202-4998-b31a-948a9b8fb735" />
