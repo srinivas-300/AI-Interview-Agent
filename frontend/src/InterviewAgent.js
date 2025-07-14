@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 function InterviewAgent() {
   const [authenticated, setAuthenticated] = useState(false);
   const [userId, setUserId] = useState("");
@@ -14,7 +16,7 @@ function InterviewAgent() {
 
   const authenticateUser = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/authenticate", {
+      const res = await axios.post(`${backendUrl}/authenticate`, {
         user_id: userId,
       });
       if (res.data.authenticated) {
@@ -36,7 +38,7 @@ function InterviewAgent() {
     setInput("");
 
     try {
-      const res = await axios.post("http://localhost:8000/chat", {
+      const res = await axios.post(`${backendUrl}/chat`, {
         message: input,
       });
       const botMessage = { sender: "bot", text: res.data.response };
@@ -52,7 +54,7 @@ function InterviewAgent() {
 
   const endInterview = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/end");
+      const res = await axios.post(`${backendUrl}/end`);
       setFinalFeedback(res.data);
     } catch (err) {
       alert("Failed to end interview.");
@@ -76,7 +78,7 @@ function InterviewAgent() {
           placeholder="Enter your ID"
           style={{ width: "80%", padding: "0.5rem", marginRight: "0.5rem" }}
         />
-        <br></br>
+        <br />
         <button onClick={authenticateUser} style={{ padding: "0.5rem 1rem" }}>
           Submit
         </button>
@@ -120,13 +122,13 @@ function InterviewAgent() {
         style={{ width: "80%", padding: "0.5rem", marginRight: "0.5rem" }}
         placeholder="Type your answer..."
       />
-      
+
       <button onClick={sendMessage} style={{ padding: "0.5rem 1rem", marginRight: "0.5rem" }}>
         Send
       </button>
 
-      <br></br>
-      
+      <br />
+
       <button
         onClick={endInterview}
         style={{ padding: "0.5rem 1rem", backgroundColor: "#e74c3c", color: "white" }}

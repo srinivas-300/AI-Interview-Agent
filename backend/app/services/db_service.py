@@ -68,4 +68,51 @@ def store_score_feedback(user_id: str, final_score: str, user_feedback: str) -> 
     except Exception as e:
         log.error(f"Error inserting interview_result \n{e}\n")
         return None
+    
+
+def get_interview_details() -> list:
+    try:
+        details_cursor = db['selection'].find({}, {"_id": 1, "name": 1, "role": 1 ,"timestamp" : 1 })
+        details = []
+
+        for doc in details_cursor:
+            doc["_id"] = str(doc["_id"])
+            details.append(doc)
+
+        return details
+    except Exception as e:
+        log.error(f"Error fetching interview details: {e}")
+        return []
+
+
+    
+def store_interview_setup_data(name: str,email: str,role: str ,jd: str, resume: str) -> str:
+    document = {
+        "name": name,
+        "email": email,
+        "role" :role,
+        "jd" : jd,
+        "resume" : resume,
+        "timestamp": datetime.now(timezone.utc)
+    }
+
+    try:
+        result = db['selection'].insert_one(document)
+        log.info(f"Conversation stored with ID: {result.inserted_id}")
+        return result.inserted_id
+    except Exception as e:
+        log.error(f"Failed to store conversation: {e}")
+        return f"{e}"
+    
+def get_interview_result(result_id: str):
+    try:
+        result = db['interview_result'].find_one(
+            {"user_id": result_id},
+            {"_id": 0}  # Exclude the _id field
+        )
+        return result  # Still returns None if not found
+    except Exception as e:
+        log.error(f"Error fetching interview result: {e}")
+        return None
+
 

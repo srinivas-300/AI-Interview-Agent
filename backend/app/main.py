@@ -3,12 +3,22 @@ from fastapi import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+
 from app.data.ChatRequest import ChatRequest
 from app.data.AuthRequest import AuthRequest
+from app.data.InterviewRequest import InterviewRequest
+from app.data.InterviewResultRequest import InterviewResultRequest
+
+from app.utils.email_template import *
+from app.services.email_service import *
+
 from app.agents.interview_agent import InterviewAgent
+from app.utils.email_template import *
 from app.services.db_service import *
 
 app = FastAPI()
+
+load_dotenv()
 
 app.add_middleware(
     CORSMiddleware,
@@ -67,20 +77,39 @@ async def end_interview():
         store_score_feedback(user_id , final_score , user_feedback)
         store_conversation_history(agent.history, agent.role)
 
+        email_content = interview_feedback_template(user_id,final_score)
+
+        send_email(f'{os.getenv("ADMIN_EMAIL")}' , email_content)
+
         agent = None  # Clear singleton and memory
         return user_feedback
     return {"message": "No active history to save."}
 
 
 
+@app.post("/interview_setup")
+async def interview_setup(request: InterviewRequest):
+
+    id = store_interview_setup_data(request.name,request.email,request.role ,request.jd, request.resume)
+
+    content = interview_id_template(id)
+
+    send_email(request.email,content)
+
+    return {"message" : "interview has been set up"}
+
+
 @app.get("/interview_details")
-def resume_parser():
-    return {"message": "interview_details backend is working!"}
+def interview_details():
+
+    interview_details = get_interview_details()
+    return interview_details
 
 @app.post("/interview_result")
-def resume_parser():
-    return {"message": "interview_result backend is working!"}
+def interview_result(request: InterviewResultRequest):
 
-@app.post("/interview_setup")
-def resume_parser():
-    return {"message": "interview_setup backend is working!"}
+    result_id = request.id
+
+    result = get_interview_result(result_id)
+
+    return result
