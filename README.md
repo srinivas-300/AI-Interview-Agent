@@ -198,7 +198,7 @@ This modular design enables fully automated yet highly adaptive interviews tailo
 <img width="616" height="274" alt="Screenshot 2025-07-14 022127" src="https://github.com/user-attachments/assets/bf7a5b22-5202-4998-b31a-948a9b8fb735" />
 
 
-### 2. 🔄 Tool-Based Decision Logic in Interview Agent
+### 2. 🔄 LangGraph Agent
 <img width="866" height="548" alt="Screenshot 2025-07-14 022626" src="https://github.com/user-attachments/assets/94d5a385-716b-4791-be62-86ca7e1dbd09" />
 
 ### 3. 🧠 Internal Architecture of the Interview Agent
