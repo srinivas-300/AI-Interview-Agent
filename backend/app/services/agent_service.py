@@ -5,41 +5,42 @@ from app.services.tavily_service import tavily_search
 from app.data.AgentState import AgentState
 from app.utils.agent_service_prompt_builder import *
 
+from judgeval.tracer import Tracer
+from judgeval.scorers import AnswerRelevancyScorer
 
+judgment = Tracer(project_name="InterviewAgentTracing")
 
-# Node 1: Decide whether to use a tool
+@judgment.observe(span_type="decision")
 def decision_node(state: AgentState) -> AgentState:
-    temp = requires_tool_prompt(state["question"])
-    print("\n----tool check prompt-----\n",temp,"\n-------------")
-    decision = ask_llm(temp)
-    print("\n---decision------\n",decision,"\n-------------\n")
+    prompt = requires_tool_prompt(state["question"])
+    decision = ask_llm(prompt)
     return {**state, "decision": decision.strip()}
 
-# Router: Decide next path
 def tool_needed(state: AgentState) -> Literal["tool", "llm"]:
     return "tool" if state["decision"].upper().startswith("YES") else "llm"
 
-# Node 2: Use tavily_search tool
+@judgment.observe(span_type="tool")
 def tool_node(state: AgentState) -> AgentState:
     output = tavily_search(state["question"])
-    print("\n----tool_output-----\n",output,"-------------\n")
     return {**state, "tool_output": output}
 
-# Node 3: Final LLM Answer
+@judgment.observe(span_type="llm")
 def llm_node(state: AgentState) -> AgentState:
+    prompt = final_response_prompt(state["question"], state.get("tool_output"))
+    answer = ask_llm(prompt)
+    
+    # Real-time Evaluation
+    judgment.async_evaluate(
+        scorers=[AnswerRelevancyScorer(threshold=0.5)],
+        input=state["question"],
+        actual_output=answer,
+        model="gpt-4.1"
+    )
 
-    temp = final_response_prompt(state["question"], state.get("tool_output"))
-    print("\n------final prompt-------\n",temp,"\n-----------")
-    final_answer = ask_llm(temp)
-    print("\n----final_answer-----\n",final_answer,"\n-------------\n")
-    return {**state, "final_answer": final_answer}
+    return {**state, "final_answer": answer}
 
-
-
-# --- Callable Agent Function ---
+@judgment.observe(span_type="function")
 def run_tool_augmented_agent(question: str):
-
-    # --- LangGraph Builder ---
     builder = StateGraph(AgentState)
     builder.add_node("decide", decision_node)
     builder.add_node("tool", tool_node)
@@ -58,6 +59,6 @@ def run_tool_augmented_agent(question: str):
         "tool_output": None,
         "final_answer": None
     }
+
     result = graph.invoke(state)
-    
     return result["final_answer"]

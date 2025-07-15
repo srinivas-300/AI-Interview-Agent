@@ -64,6 +64,10 @@ Want to run this locally or on a cloud VM using Docker? [See full deployment gui
    ADMIN_EMAIL=
    frontend_url=        # Local or EC2 IP with port (for CORS)
    REACT_APP_BACKEND_URL= # Backend IP with port
+   JUDGMENT_API_KEY=# For Tracing and Evaluation of LLM using Judgeval
+   JUDGMENT_ORG_ID=
+   JUDGMENT_MONITORING=true
+   JUDGMENT_EVALUATIONS=true
    ```
 
 3. **MongoDB Setup**  
