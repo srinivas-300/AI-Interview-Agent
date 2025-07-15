@@ -9,6 +9,12 @@ node_modules/
 OneDrive/
 Thumbs.db
 
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+
 # Ignore files with invalid perms
 *.lnk
 *.tmp
