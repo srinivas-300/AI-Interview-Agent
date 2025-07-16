@@ -21,8 +21,18 @@ def tool_needed(state: AgentState) -> Literal["tool", "llm"]:
 
 @judgment.observe(span_type="tool")
 def tool_node(state: AgentState) -> AgentState:
-    output = tavily_search(state["question"])
-    return {**state, "tool_output": output}
+    # Ask LLM which tool to use
+    tool_prompt = selection_tool_prompt(state["question"])
+    selected_tool = ask_llm(tool_prompt).strip().lower()
+
+    # Use selected tool
+    if selected_tool == "tavily_search":
+        output = tavily_search(state["question"])
+    else:
+        output = f"Error: Unknown tool '{selected_tool}' selected by LLM."
+
+    return {**state, "tool_output": output, "tool_selected": selected_tool}
+
 
 @judgment.observe(span_type="llm")
 def llm_node(state: AgentState) -> AgentState:

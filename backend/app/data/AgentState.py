@@ -6,3 +6,4 @@ class AgentState(TypedDict):
     decision: Optional[str]
     tool_output: Optional[str]
     final_answer: Optional[str]
+    tool_selected: Optional[str]
